@@ -1,10 +1,24 @@
-version: '3'
+version: "3.8"
+
 services:
- webserver:
-  image:httpd
-ports:
- -80:80
- tomserver:
- image: docker pull tomcat
+  httpd:
+    image: httpd:2.4
+    container_name: apache_server
     ports:
-    -8080:8080
+      - "8080:80" # Map host port 8080 to container port 80
+    volumes:
+      - ./apache-html:/usr/local/apache2/htdocs/ # Mount local HTML files
+    networks:
+      - web_network
+
+  tomcat:
+    image: tomcat:10.1
+    container_name: tomcat_server
+    ports:
+      - "8081:8080" # Map host port 8081 to container port 8080
+    networks:
+      - web_network
+
+networks:
+  web_network:
+    driver: bridge
